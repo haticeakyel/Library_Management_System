@@ -1,0 +1,40 @@
+Kardeşimin Hikayesi,Zülfü Livaneli,Doğan Kitap
+Fareler ve İnsanlar,John Steinbeck,Can
+Cesur Yeni Dünya,Aldous Huxley,İthaki
+Küçük Prens,Antonie de Saint-Exupery,Can Çocuk
+Hayvan Çiftliği,George Orwell,Can
+1984,George Orwell,Can
+Gazap Üzümleri,John Steinbeck,Remzi Kitabevi
+Satranç,Stefan Zweig,İş Bankası Yayınları
+Yaşlı Adam ve Deniz,Ernest Hemingway,Bilgi Yayınevi
+Yabancı,Albert Camus,Can
+Çavdar Tarlasında Çocuklar,J.D.Salinger,Yapı Kredi Yayınları
+Mülksüzler,Ursula K.Le Guin,Metis
+Yüzyıllık Yalnızlık,Gabriek Garcia Marquez,Can
+Gülün Adı,Umberto Eco,Can
+İnce Memed,Yaşar Kemal,Yapı Kredi Yayınları
+Simyacı,Paulo Coelho,Can
+Bulantı,Jean-Paul Sartre,Can
+Varolmanın Dayanılmaz HafifLiği,Milan Kundera,Can
+Fedailerin Kalesi Alamut,Vladimir Bartol,Koridor
+Çanlar Kimin İçin Çalıyor,Ernest Hemingway,Bilgi Yayınevi
+Sefiler,Victor Hugo,Ema Kitap
+Suç ve Ceza,Fyodor Dostoyevski,İş Bankası Yayınları
+Acı Çikolata,Laura Esquivel,İnkılap Kitabevi
+Tatar Çölü,Dino Buzzati,İletişim
+Zorba,Nikos Kazancakis,Can
+Ölümsüz Aile,Natalie Babbitt,İş Bankası Yayınları
+Açlık,Knut Hamsun,Varlık
+Bozkırkurdu,Hermann Hesse,Yapı Kredi Yayınları
+Kör Baykuş,Sadık Hidayet,İletişim
+Koku,Patrick Süskind,Can
+Sırça Fanus,Sylvia Plath,Kırmızı Kedi
+Sahilde Kafka,Haruki Murakami,Doğan Kitağ
+Koleksiyoncu,John Fowles,Ayrıntı
+Kozmos,Carl Sagan,Altın Kitap
+Sıfır Noktasındaki Kadın,Neval el Saadavi,Metis
+Silahlara Veda,Ernest Hemingway,Bilgi
+Drina Köprüsü,İvo Andriç,İletişim
+Huzursuzluğun Kitabı,Fernando Pessoa,Can
+Sputnik Sevgilim,Haruki Murakami,Doğan Kitap
+Gecenin Sonuna Yolculuk,Louis-Ferdinand Celine,Yapı Kredi Yayınları

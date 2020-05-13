@@ -6,33 +6,33 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene;
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene;
 
 
     @Override
     public void start(Stage stage) throws Exception {
+
         File userFile = new File("users.txt");
         if(userFile.createNewFile()){
-            System.out.println("users.txt olustu.");
+            System.out.println("users.txt created");
         }
         else {
-            System.out.println("already exist");
+            System.out.println("users.txt is already exist");
         }
         //new user oluşturuldu
         BufferedReader bufferedReader = new BufferedReader(new FileReader("users.txt"));
@@ -47,7 +47,7 @@ public class Main extends Application {
         Stage userStage = new Stage();
         Stage adminStage = new Stage();
 
-        Label welcomeLabel = new Label("-----------Welcome to the Library------------");
+        Label welcomeLabel = new Label("---------Welcome to the Library---------");
 
         Button user = new Button("User Login");
         Button admin = new Button("Admin Login");
@@ -55,6 +55,7 @@ public class Main extends Application {
 
         Stage finalStage = stage;
         VBox vBox = new VBox(25);
+        vBox.setPadding(new Insets(0,20,20,20));
         vBox.getChildren().addAll(welcomeLabel, admin, user, exit);
         welcomeScene = new Scene(vBox, 300, 250);
         stage.setScene(welcomeScene);
@@ -88,14 +89,43 @@ public class Main extends Application {
             Button login = new Button("Log In");
             GridPane.setConstraints(login, 1, 2);
             Admin adminH = new Admin("haticeakyel", "library");
-
             login.setOnAction(event -> {
                 if (nameInput.getText().equals(adminH.getUsername()) && (passwordInput.getText().equals(adminH.getPassword()))){
-                    System.out.println("Welcome Hatice!");
+                    Stage adminMethods = new Stage();
+                    VBox vBoxAdM = new VBox(30);
+                    vBoxAdM.setPadding(new Insets(30,30,30,30));
+                    Button showUsers = new Button("Show Users");
+                    Button showBooks = new Button("Show Books");
+                    Button showRules = new Button("Show Rules");
+
+                    vBoxAdM.getChildren().addAll(showUsers, showBooks, showRules);
+                    adminMethodsScene = new Scene(vBoxAdM, 180,200);
+                    adminMethods.setScene(adminMethodsScene);
+                    adminMethods.show();
+
+                    showUsers.setOnAction(event1 -> {
+                        Stage stageUsers = new Stage();
+                        ListView listView = new ListView <>();
+                        listView.getItems().addAll(userList.get(0));
+                        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+                        VBox vBoxUL = new VBox(25);
+                        vBoxUL.setPadding(new Insets(80,80,80,80));
+                        vBoxUL.getChildren().addAll(listView);
+                        showUsersScene = new Scene(vBoxUL,300,500);
+                        stageUsers.setScene(showUsersScene);
+                        stageUsers.show();
+
+                    });
+
+                    /* showBooks.setOnAction(event1 -> {
+                        Stage stage
+                    }); */
                 }
                 else {
                     System.out.println("You entered something wrong");
                 }
+
             });
 
 
@@ -112,8 +142,9 @@ public class Main extends Application {
             Button exitUser = new Button("Exit");
 
             VBox vBoxU = new VBox(25);
+            vBoxU.setPadding(new Insets(20,20,20,20));
             vBoxU.getChildren().addAll(currentUser, newUser, exitUser);
-            userScene = new Scene(vBoxU, 300, 250);
+            userScene = new Scene(vBoxU, 200, 250);
             userStage.setScene(userScene);
             userStage.setTitle("User Sign In");
             userStage.show();
@@ -151,6 +182,17 @@ public class Main extends Application {
                 curUStage.setScene(currentUScene);
                 curUStage.setTitle("Current User Sign In");
                 curUStage.show();
+
+                curLogin.setOnAction(event1 -> {
+                    Stage stageUser = new Stage();
+                    VBox vBoxC = new VBox(25);
+                    vBoxC.setPadding(new Insets(20,20,20,20));
+                    Button showBooks = new Button("Show Books");
+                    Button showFine = new Button("Show Fine");
+                    Button changeP = new Button("Change Password");
+                    Button showR = new Button("Show Rules");
+                    //Scene userScene = new Scene();
+                });
 
             });
 
@@ -215,7 +257,6 @@ public class Main extends Application {
             });
             //exit in user page
             exitUser.setOnAction(event1 -> {
-                System.out.println("Program is closing...");
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -229,7 +270,6 @@ public class Main extends Application {
 
         //if exit in welcome page
         exit.setOnAction(e -> {
-            System.out.println("Program is closing...");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException ex) {
@@ -237,13 +277,28 @@ public class Main extends Application {
             }
             finalStage.close();
         });
+                File bookFile = new File("books.txt");
+                if (bookFile.createNewFile()){
+                    System.out.println("File created.");
+                }
+                else {
+                    System.out.println("File is already exist");
+                }
 
+                BufferedReader bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
+                String rowB;
+                List<Book> bookList = new ArrayList<>();
+                while ((rowB = bufferedReaderbook.readLine()) != null){
+                    String[] info = rowB.split(",");
+                    Book book = new Book(info[0],info[1],info[2]);
+                    bookList.add(book);
 
-    }
+                }
+
+            }
+
 
     public static void main(String[] args) {
-
-
         launch(args);
     }
 

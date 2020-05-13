@@ -10,6 +10,10 @@ public class Admin implements IAdmin,ILibrarian{
         this.setPassword(password);
     }
 
+    public void welcomePage(){
+
+    }
+
     @Override
     public void showUsers() {
 

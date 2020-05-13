@@ -1,30 +1,34 @@
 package sample;
 
-import java.io.File;
-import java.io.Serializable;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class Book implements Serializable {
+import java.io.*;
+
+public class Book  {
     private String name;
     private String author;
     private String publisher;
-    private transient int libID;
 
-    public Book (String name, String author, String publisher, int libID){
+    public Book (String name, String author, String publisher){
         this.setName(name);
         this.setAuthor(author);
         this.setPublisher(publisher);
-        this.setLibID(libID);
+
     }
 
-    public File fileB = new File("books.txt");
-
-
-
-    @Override
-    public String toString() {
-        return super.toString();
+    File fileB = new File("books.txt");
+    FileReader frB;
+    {
+        try {
+            frB = new FileReader(fileB);
+            char b = (char) frB.read();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("IO Exception");
+        }
     }
-
     public String getName() {
         return name;
     }
@@ -49,11 +53,4 @@ public class Book implements Serializable {
         this.publisher = publisher;
     }
 
-    public int getLibID() {
-        return libID;
-    }
-
-    public void setLibID(int libID) {
-        this.libID = libID;
-    }
 }

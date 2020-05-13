@@ -2,11 +2,10 @@ package sample;
 
 import java.io.*;
 
-public class User extends Librarian implements Serializable, IUser,ILibrarian {
+public class User  implements Serializable, IUser,ILibrarian {
     private String name;
     private String nickname;
     private String password;
-    static int num = 0;
 
     public User(String name, String nickname, String password){
         this.setName(name);
