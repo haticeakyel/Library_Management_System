@@ -53,6 +53,7 @@ public class User  implements Serializable, IUser,ILibrarian {
     }
 
     public String getName() {
+
         return name;
     }
 

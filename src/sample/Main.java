@@ -1,12 +1,15 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,12 +24,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene;
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene;
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
+        //
         File userFile = new File("users.txt");
         if(userFile.createNewFile()){
             System.out.println("users.txt created");
@@ -105,13 +109,19 @@ public class Main extends Application {
 
                     showUsers.setOnAction(event1 -> {
                         Stage stageUsers = new Stage();
-                        ListView listView = new ListView <>();
-                        listView.getItems().addAll(userList.get(0));
-                        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                        TableView tableView = new TableView ();
+                        tableView.setEditable(true);
+                        TableColumn nameColumn = new TableColumn("Name Surname");
+                        TableColumn usernameColumn = new TableColumn("Username");
+                        tableView.getColumns().addAll(nameColumn,usernameColumn);
+                        ObservableList<User> userObservableList = FXCollections.observableArrayList(userList);
+                        tableView.getItems().addAll(userObservableList);
+                        nameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("name"));
+                        usernameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("nickname"));
 
                         VBox vBoxUL = new VBox(25);
                         vBoxUL.setPadding(new Insets(80,80,80,80));
-                        vBoxUL.getChildren().addAll(listView);
+                        vBoxUL.getChildren().addAll(tableView);
                         showUsersScene = new Scene(vBoxUL,300,500);
                         stageUsers.setScene(showUsersScene);
                         stageUsers.show();
@@ -184,14 +194,24 @@ public class Main extends Application {
                 curUStage.show();
 
                 curLogin.setOnAction(event1 -> {
-                    Stage stageUser = new Stage();
-                    VBox vBoxC = new VBox(25);
-                    vBoxC.setPadding(new Insets(20,20,20,20));
-                    Button showBooks = new Button("Show Books");
-                    Button showFine = new Button("Show Fine");
-                    Button changeP = new Button("Change Password");
-                    Button showR = new Button("Show Rules");
-                    //Scene userScene = new Scene();
+                    if (userList.stream().anyMatch(o -> o.getNickname().equals(curNameInput.getText()) && o.getPassword().equals(curPasswordInput.getText()))){
+                        Stage stageUser = new Stage();
+                        VBox vBoxC = new VBox(25);
+                        vBoxC.setPadding(new Insets(20,20,20,20));
+                        Button showBooks = new Button("Show Books");
+                        Button showFine = new Button("Show Fine");
+                        Button changeP = new Button("Change Password");
+                        Button showR = new Button("Show Rules");
+                        //Scene userScene = new Scene();
+                    }
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setContentText("Ooops, there was an error!");
+                        alert.showAndWait();
+                    }
+
+
                 });
 
             });
