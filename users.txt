@@ -1,5 +1,8 @@
 Hüseyin Can Yıldırım,hcyildirim,12345
 Ali Elverir,alielverir,161616
 Selin Akçay,selinakcay,123456
-Handenur Mırık,handenurmirik,123handeSelma Akyel,selmaakyel,selma12
+Handenur Mırık,handenurmirik,123hande
 Selma Akyel,selmaakyel,selma12
+Elif Yaren Ekinci,eyarenekinci,yaren2000
+Gizem Uzun,gizemuzun,gizem99
+Zeynep Silibuldu,zeynepsilibuldu,zeynep99

@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene;
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene, curUSignScene;
 
 
     @Override
@@ -100,9 +100,9 @@ public class Main extends Application {
                     vBoxAdM.setPadding(new Insets(30,30,30,30));
                     Button showUsers = new Button("Show Users");
                     Button showBooks = new Button("Show Books");
-                    Button showRules = new Button("Show Rules");
+                    Button addBook = new Button("Add Book");
 
-                    vBoxAdM.getChildren().addAll(showUsers, showBooks, showRules);
+                    vBoxAdM.getChildren().addAll(showUsers, showBooks, addBook);
                     adminMethodsScene = new Scene(vBoxAdM, 180,200);
                     adminMethods.setScene(adminMethodsScene);
                     adminMethods.show();
@@ -122,18 +122,121 @@ public class Main extends Application {
                         VBox vBoxUL = new VBox(25);
                         vBoxUL.setPadding(new Insets(80,80,80,80));
                         vBoxUL.getChildren().addAll(tableView);
-                        showUsersScene = new Scene(vBoxUL,300,500);
+                        showUsersScene = new Scene(vBoxUL,500,700);
                         stageUsers.setScene(showUsersScene);
                         stageUsers.show();
 
                     });
 
-                    /* showBooks.setOnAction(event1 -> {
-                        Stage stage
-                    }); */
+                        addBook.setOnAction(event1 -> {
+                            Stage addBookStage = new Stage();
+                            VBox vBoxAddBook = new VBox(25);
+                            GridPane gridPaneAddBook = new GridPane();
+                            gridPaneAddBook.setPadding(new Insets(10,10,10,10));
+                            gridPaneAddBook.setVgap(8);
+                            gridPaneAddBook.setHgap(10);
+
+                            Label bookNameLabel = new Label("Book Name: ");
+                            gridPaneAddBook.setConstraints(bookNameLabel, 0, 0);
+
+                            TextField bookNameInput = new TextField();
+                            bookNameInput.setPromptText("book name");
+                            gridPaneAddBook.setConstraints(bookNameInput, 1, 0);
+
+                            Label authorLabel = new Label("Author: ");
+                            gridPaneAddBook.setConstraints(authorLabel, 0, 1);
+
+                            TextField authorInput = new TextField();
+                            authorInput.setPromptText("author");
+                            gridPaneAddBook.setConstraints(authorInput, 1, 1);
+
+                            Label publisherLabel = new Label("Publisher: ");
+                            gridPaneAddBook.setConstraints(publisherLabel, 0, 2);
+
+                            TextField publisherInput = new TextField();
+                            publisherInput.setPromptText("publisher");
+                            gridPaneAddBook.setConstraints(publisherInput, 1, 2);
+
+                            Button add = new Button("Add");
+                            gridPaneAddBook.setConstraints(add, 1,3);
+
+                            gridPaneAddBook.getChildren().addAll(bookNameLabel, bookNameInput, authorLabel, authorInput, publisherLabel, publisherInput,add);
+                            addBookScene = new Scene(gridPaneAddBook, 380, 300);
+                            addBookStage.setScene(addBookScene);
+                            addBookStage.setTitle("Adding New Book");
+                            addBookStage.show();
+
+                            add.setOnAction(event2 -> {
+                                File bookFile = new File("books.txt");
+                                try {
+                                    if (bookFile.createNewFile()){
+                                        System.out.println("File created.");
+                                    }
+                                    else {
+                                        System.out.println("books.txt is already exist");
+                                    }
+                                } catch (IOException ex) {
+                                    System.out.println("Io Exception");
+                                }
+                                try {
+                                    BufferedWriter bufferedWriterBook = new BufferedWriter(new FileWriter("books.txt",true));
+                                    bufferedWriterBook.write(String.format("%s,%s,%s\n",bookNameInput.getText(),authorInput.getText(),publisherInput.getText()));
+                                    bufferedWriterBook.close();
+                                } catch (IOException ex) {
+                                    System.out.println("Io Exception while writing books.txt");
+                                }
+
+
+                            });
+
+                    });
+
+                        showBooks.setOnAction(event1 -> {
+                            BufferedReader bufferedReaderbook = null;
+                            try {
+                                bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
+                            } catch (FileNotFoundException ex) {
+                                System.out.println("File not found.");
+                            }
+                            String rowB = "";
+                            List<Book> bookList = new ArrayList<>();
+                            while (true){
+                                try {
+                                    if (!((rowB = bufferedReaderbook.readLine()) != null)) break;
+                                } catch (IOException ex) {
+                                    System.out.println("Io exception");
+                                }
+                                String[] info = rowB.split(",");
+                                Book book = new Book(info[0],info[1],info[2]);
+                                bookList.add(book);
+                            }
+                            Stage showBooksStage = new Stage();
+                            TableView tableView = new TableView ();
+                            tableView.setEditable(true);
+                            TableColumn nameColumn = new TableColumn("Name");
+                            TableColumn authorColumn = new TableColumn("Author");
+                            TableColumn publisherColumn = new TableColumn("Publisher");
+                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
+                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
+                            tableView.getItems().addAll(bookObservableList);
+                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
+                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
+                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
+
+                            VBox vBoxUL = new VBox(25);
+                            vBoxUL.setPadding(new Insets(80,80,80,80));
+                            vBoxUL.getChildren().addAll(tableView);
+                            showBooksScene = new Scene(vBoxUL,1000,2000);
+                            showBooksStage.setScene(showBooksScene);
+                            showBooksStage.show();
+                        });
                 }
                 else {
-                    System.out.println("You entered something wrong");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText("Please try again!");
+                    alert.setContentText("You entered something wrong!");
+                    alert.showAndWait();
                 }
 
             });
@@ -199,15 +302,24 @@ public class Main extends Application {
                         VBox vBoxC = new VBox(25);
                         vBoxC.setPadding(new Insets(20,20,20,20));
                         Button showBooks = new Button("Show Books");
-                        Button showFine = new Button("Show Fine");
                         Button changeP = new Button("Change Password");
-                        Button showR = new Button("Show Rules");
-                        //Scene userScene = new Scene();
+                        vBoxC.getChildren().addAll(showBooks, changeP);
+                        curUSignScene = new Scene(vBoxC, 200,200);
+                        stageUser.setScene(curUSignScene);
+                        stageUser.show();
+
+
+                        showBooks.setOnAction(event2 -> {
+
+
+                        });
                     }
+
                     else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error Dialog");
-                        alert.setContentText("Ooops, there was an error!");
+                        alert.setHeaderText("Please try again!");
+                        alert.setContentText("You entered something wrong!");
                         alert.showAndWait();
                     }
 
@@ -215,7 +327,6 @@ public class Main extends Application {
                 });
 
             });
-
             //new user
             newUser.setOnAction(eNew -> {
                 Stage newUStage = new Stage();
@@ -257,6 +368,17 @@ public class Main extends Application {
                 GridPane.setConstraints(signUp, 1,4);
 
                 signUp.setOnAction(event1 -> {
+                    if (passInput.getText().equals(passCheckI.getText())){
+
+                        if (userList.stream().anyMatch(o -> o.getNickname().equals(nickInput.getText()))){
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error Dialog");
+                            alert.setHeaderText("This nickname is already exist!");
+                            alert.setContentText("Please write another nickname.");
+                            alert.showAndWait();
+                        }
+                        else {
+
                     try {
                         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("users.txt",true));
                         bufferedWriter.write(String.format("%s,%s,%s\n",newNSInput.getText(),nickInput.getText(),passInput.getText()));
@@ -265,6 +387,17 @@ public class Main extends Application {
                     catch (IOException e) {
                         e.printStackTrace();
                     }
+                    }
+                    }
+
+                    else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setHeaderText("Passwords don't match!");
+                        alert.setContentText("Please write same passwords!");
+                        alert.showAndWait();
+                    }
+
 
                 });
 
@@ -297,23 +430,7 @@ public class Main extends Application {
             }
             finalStage.close();
         });
-                File bookFile = new File("books.txt");
-                if (bookFile.createNewFile()){
-                    System.out.println("File created.");
-                }
-                else {
-                    System.out.println("File is already exist");
-                }
 
-                BufferedReader bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
-                String rowB;
-                List<Book> bookList = new ArrayList<>();
-                while ((rowB = bufferedReaderbook.readLine()) != null){
-                    String[] info = rowB.split(",");
-                    Book book = new Book(info[0],info[1],info[2]);
-                    bookList.add(book);
-
-                }
 
             }
 
