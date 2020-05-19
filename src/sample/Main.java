@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -24,13 +25,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene, curUSignScene;
-
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene, curUSignScene, pScene;
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        //
         File userFile = new File("users.txt");
         if(userFile.createNewFile()){
             System.out.println("users.txt created");
@@ -38,7 +37,8 @@ public class Main extends Application {
         else {
             System.out.println("users.txt is already exist");
         }
-        //new user oluşturuldu
+
+        // buffered reader for users.txt
         BufferedReader bufferedReader = new BufferedReader(new FileReader("users.txt"));
         String row;
         List<User> userList = new ArrayList<>();
@@ -47,6 +47,30 @@ public class Main extends Application {
             User user = new User(data[0],data[1],data[2]);
             userList.add(user);
         }
+
+
+        //buffered reader for books.txt
+        BufferedReader bufferedReaderbook = null;
+        try {
+            bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found.");
+        }
+        String rowB = "";
+        List<Book> bookList = new ArrayList<>();
+        while (true){
+            try {
+                if (!((rowB = bufferedReaderbook.readLine()) != null))
+                    break;
+            } catch (IOException ex) {
+                System.out.println("Io exception");
+            }
+            String[] info = rowB.split(",");
+            Book book = new Book(info[0],info[1],info[2]);
+            bookList.add(book);
+        }
+
+
         stage = new Stage();
         Stage userStage = new Stage();
         Stage adminStage = new Stage();
@@ -72,29 +96,30 @@ public class Main extends Application {
             gridPane.setPadding(new Insets(10, 10, 10, 10));
             gridPane.setVgap(8);
             gridPane.setHgap(10);
-            // name label
+            gridPane.setAlignment(Pos.CENTER);
+
             Label nameLabel = new Label("Username: ");
             GridPane.setConstraints(nameLabel, 0, 0);
-
-            //name input
             TextField nameInput = new TextField();
             nameInput.setPromptText("username");
             GridPane.setConstraints(nameInput, 1, 0);
-
-            //password label
             Label passwordLabel = new Label("Password: ");
             GridPane.setConstraints(passwordLabel, 0, 1);
-
-            //password input
             PasswordField passwordInput = new PasswordField();
             passwordInput.setPromptText("password");
             GridPane.setConstraints(passwordInput, 1, 1);
 
             Button login = new Button("Log In");
             GridPane.setConstraints(login, 1, 2);
-            Admin adminH = new Admin("haticeakyel", "library");
+            Admin adminH = null;
+            try {
+                adminH = new Admin("haticeakyel", "library");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            Admin finalAdminH = adminH;
             login.setOnAction(event -> {
-                if (nameInput.getText().equals(adminH.getUsername()) && (passwordInput.getText().equals(adminH.getPassword()))){
+                if (nameInput.getText().equals(finalAdminH.getUsername()) && (passwordInput.getText().equals(finalAdminH.getPassword()))){
                     Stage adminMethods = new Stage();
                     VBox vBoxAdM = new VBox(30);
                     vBoxAdM.setPadding(new Insets(30,30,30,30));
@@ -120,96 +145,20 @@ public class Main extends Application {
                         usernameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("nickname"));
 
                         VBox vBoxUL = new VBox(25);
-                        vBoxUL.setPadding(new Insets(80,80,80,80));
+                        vBoxUL.setPadding(new Insets(10,10,10,10));
                         vBoxUL.getChildren().addAll(tableView);
-                        showUsersScene = new Scene(vBoxUL,500,700);
+                        showUsersScene = new Scene(vBoxUL,500,500);
                         stageUsers.setScene(showUsersScene);
                         stageUsers.show();
 
                     });
-
                         addBook.setOnAction(event1 -> {
-                            Stage addBookStage = new Stage();
-                            VBox vBoxAddBook = new VBox(25);
-                            GridPane gridPaneAddBook = new GridPane();
-                            gridPaneAddBook.setPadding(new Insets(10,10,10,10));
-                            gridPaneAddBook.setVgap(8);
-                            gridPaneAddBook.setHgap(10);
-
-                            Label bookNameLabel = new Label("Book Name: ");
-                            gridPaneAddBook.setConstraints(bookNameLabel, 0, 0);
-
-                            TextField bookNameInput = new TextField();
-                            bookNameInput.setPromptText("book name");
-                            gridPaneAddBook.setConstraints(bookNameInput, 1, 0);
-
-                            Label authorLabel = new Label("Author: ");
-                            gridPaneAddBook.setConstraints(authorLabel, 0, 1);
-
-                            TextField authorInput = new TextField();
-                            authorInput.setPromptText("author");
-                            gridPaneAddBook.setConstraints(authorInput, 1, 1);
-
-                            Label publisherLabel = new Label("Publisher: ");
-                            gridPaneAddBook.setConstraints(publisherLabel, 0, 2);
-
-                            TextField publisherInput = new TextField();
-                            publisherInput.setPromptText("publisher");
-                            gridPaneAddBook.setConstraints(publisherInput, 1, 2);
-
-                            Button add = new Button("Add");
-                            gridPaneAddBook.setConstraints(add, 1,3);
-
-                            gridPaneAddBook.getChildren().addAll(bookNameLabel, bookNameInput, authorLabel, authorInput, publisherLabel, publisherInput,add);
-                            addBookScene = new Scene(gridPaneAddBook, 380, 300);
-                            addBookStage.setScene(addBookScene);
-                            addBookStage.setTitle("Adding New Book");
-                            addBookStage.show();
-
-                            add.setOnAction(event2 -> {
-                                File bookFile = new File("books.txt");
-                                try {
-                                    if (bookFile.createNewFile()){
-                                        System.out.println("File created.");
-                                    }
-                                    else {
-                                        System.out.println("books.txt is already exist");
-                                    }
-                                } catch (IOException ex) {
-                                    System.out.println("Io Exception");
-                                }
-                                try {
-                                    BufferedWriter bufferedWriterBook = new BufferedWriter(new FileWriter("books.txt",true));
-                                    bufferedWriterBook.write(String.format("%s,%s,%s\n",bookNameInput.getText(),authorInput.getText(),publisherInput.getText()));
-                                    bufferedWriterBook.close();
-                                } catch (IOException ex) {
-                                    System.out.println("Io Exception while writing books.txt");
-                                }
-
-
-                            });
+                            finalAdminH.addBook();
 
                     });
 
+
                         showBooks.setOnAction(event1 -> {
-                            BufferedReader bufferedReaderbook = null;
-                            try {
-                                bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
-                            } catch (FileNotFoundException ex) {
-                                System.out.println("File not found.");
-                            }
-                            String rowB = "";
-                            List<Book> bookList = new ArrayList<>();
-                            while (true){
-                                try {
-                                    if (!((rowB = bufferedReaderbook.readLine()) != null)) break;
-                                } catch (IOException ex) {
-                                    System.out.println("Io exception");
-                                }
-                                String[] info = rowB.split(",");
-                                Book book = new Book(info[0],info[1],info[2]);
-                                bookList.add(book);
-                            }
                             Stage showBooksStage = new Stage();
                             TableView tableView = new TableView ();
                             tableView.setEditable(true);
@@ -232,11 +181,8 @@ public class Main extends Application {
                         });
                 }
                 else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error Dialog");
-                    alert.setHeaderText("Please try again!");
-                    alert.setContentText("You entered something wrong!");
-                    alert.showAndWait();
+                    AlertMaker alert = new AlertMaker("Error Dialog","Please try again!","You entered something wrong!");
+                    alert.makeAlert();
                 }
 
             });
@@ -270,20 +216,17 @@ public class Main extends Application {
                 curGridPane.setPadding(new Insets(10, 10, 10, 10));
                 curGridPane.setVgap(8);
                 curGridPane.setHgap(10);
-                // name label
+
                 Label curNameLabel = new Label("Username: ");
                 GridPane.setConstraints(curNameLabel, 0, 0);
 
-                //name input
                 TextField curNameInput = new TextField();
                 curNameInput.setPromptText("username");
                 GridPane.setConstraints(curNameInput, 1, 0);
 
-                //password label
                 Label curPasswordLabel = new Label("Password: ");
                 GridPane.setConstraints(curPasswordLabel, 0, 1);
 
-                //password input
                 PasswordField curPasswordInput = new PasswordField();
                 curPasswordInput.setPromptText("password");
                 GridPane.setConstraints(curPasswordInput, 1, 1);
@@ -299,28 +242,86 @@ public class Main extends Application {
                 curLogin.setOnAction(event1 -> {
                     if (userList.stream().anyMatch(o -> o.getNickname().equals(curNameInput.getText()) && o.getPassword().equals(curPasswordInput.getText()))){
                         Stage stageUser = new Stage();
-                        VBox vBoxC = new VBox(25);
-                        vBoxC.setPadding(new Insets(20,20,20,20));
+                        GridPane gridPaneCurUser = new GridPane();
+                        gridPaneCurUser.setAlignment(Pos.CENTER);
+                        gridPaneCurUser.setPadding(new Insets(20,20,20,20));
                         Button showBooks = new Button("Show Books");
                         Button changeP = new Button("Change Password");
-                        vBoxC.getChildren().addAll(showBooks, changeP);
-                        curUSignScene = new Scene(vBoxC, 200,200);
+                        gridPaneCurUser.getChildren().addAll(showBooks, changeP);
+                        curUSignScene = new Scene(gridPaneCurUser, 200,200);
                         stageUser.setScene(curUSignScene);
                         stageUser.show();
 
 
                         showBooks.setOnAction(event2 -> {
+                            Stage showBooksStage = new Stage();
+                            TableView tableView = new TableView ();
+                            tableView.setEditable(true);
+                            TableColumn nameColumn = new TableColumn("Name");
+                            TableColumn authorColumn = new TableColumn("Author");
+                            TableColumn publisherColumn = new TableColumn("Publisher");
+                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
+                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
+                            tableView.getItems().addAll(bookObservableList);
+                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
+                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
+                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
+                            if (tableView.getSelectionModel().getSelectedItem() != null){
+                                Object newValue = new Object();
+                                TableView.TableViewSelectionModel selectionModel = tableView.getSelectionModel();
+                                ObservableList selectedCells = selectionModel.getSelectedCells();
+                                TablePosition tablePosition = (TablePosition) selectedCells.get(0);
+                                Object val = tablePosition.getTableColumn().getCellData(newValue);
+                                System.out.println("Selected Value" + val);
+                            }
 
+                            VBox vBoxUL = new VBox(25);
+                            vBoxUL.setPadding(new Insets(10,10,10,10));
+                            vBoxUL.getChildren().addAll(tableView);
+                            showBooksScene = new Scene(vBoxUL,1000,2000);
+                            showBooksStage.setScene(showBooksScene);
+                            showBooksStage.show();
+                        });
+
+                        changeP.setOnAction(event2 -> {
+                            Stage stageP = new Stage();
+                            GridPane gridPane = new GridPane();
+                            gridPane.setPadding(new Insets(10, 10, 10, 10));
+                            gridPane.setVgap(8);
+                            gridPane.setHgap(10);
+
+                            Label passwordLabel = new Label(" New Password: ");
+                            gridPane.setConstraints(passwordLabel, 0, 0);
+                            PasswordField passInput = new PasswordField();
+                            passInput.setPromptText(" new password");
+                            gridPane.setConstraints(passInput, 1, 0);
+                            Label passCheckL = new Label("New Password again: ");
+                            gridPane.setConstraints(passCheckL, 1, 1);
+                            PasswordField passCheckI = new PasswordField();
+                            passCheckI.setPromptText(" new password");
+                            gridPane.setConstraints(passCheckI, 2, 1);
+                            Button edit = new Button("Change Password");
+                            gridPane.setConstraints(edit,2,2);
+                            edit.setOnAction(event3 -> {
+                                /* if (passInput.getText().equals(passCheckI.getText())){
+                                    userList.stream().o-> o.setPassword(passInput.getText()));
+                                }
+                                else{
+                                    Alert
+                                } */
+
+                                gridPane.getChildren().addAll(passwordLabel,passInput,passCheckL,passCheckI,edit);
+                                pScene = new Scene(gridPane,400,400);
+                                stageP.setScene(pScene);
+                                stageP.show();
+                            });
 
                         });
                     }
 
                     else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error Dialog");
-                        alert.setHeaderText("Please try again!");
-                        alert.setContentText("You entered something wrong!");
-                        alert.showAndWait();
+                        AlertMaker alert = new AlertMaker("Error Dialog","Please try again!","You entered something wrong!");
+                        alert.makeAlert();
                     }
 
 
@@ -336,26 +337,18 @@ public class Main extends Application {
                 newGridPane.setVgap(8);
                 newGridPane.setHgap(10);
 
-                //name surname label
                 Label newNSLabel = new Label("Name Surname: ");
                 GridPane.setConstraints(newNSLabel, 0, 0);
-                //name surname input
                 TextField newNSInput = new TextField();
                 newNSInput.setPromptText("name surname");
                 GridPane.setConstraints(newNSInput, 1, 0);
-
-                //nickname label
                 Label nickLabel = new Label("Nickname: ");
                 GridPane.setConstraints(nickLabel, 0, 1);
-                //nickname input
                 TextField nickInput = new TextField();
                 nickInput.setPromptText("nickname");
                 GridPane.setConstraints(nickInput, 1, 1);
-
-                //password label
                 Label passwordLabel = new Label("Password");
                 GridPane.setConstraints(passwordLabel, 0, 2);
-                //password input
                 PasswordField passInput = new PasswordField();
                 passInput.setPromptText("password");
                 GridPane.setConstraints(passInput, 1, 2);
@@ -371,11 +364,8 @@ public class Main extends Application {
                     if (passInput.getText().equals(passCheckI.getText())){
 
                         if (userList.stream().anyMatch(o -> o.getNickname().equals(nickInput.getText()))){
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Error Dialog");
-                            alert.setHeaderText("This nickname is already exist!");
-                            alert.setContentText("Please write another nickname.");
-                            alert.showAndWait();
+                            AlertMaker alert = new AlertMaker("Error Dialog","This nickname is already exist!","Please write another nickname.");
+                            alert.makeAlert();
                         }
                         else {
 
@@ -391,16 +381,11 @@ public class Main extends Application {
                     }
 
                     else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error Dialog");
-                        alert.setHeaderText("Passwords don't match!");
-                        alert.setContentText("Please write same passwords!");
-                        alert.showAndWait();
+                        AlertMaker alert = new AlertMaker("Error Dialog","Passwords don't match!","Please write same passwords!");
+                        alert.makeAlert();
                     }
 
-
                 });
-
                 newGridPane.getChildren().addAll(newNSLabel, newNSInput, nickLabel, nickInput, passwordLabel, passInput, passCheckL, passCheckI, signUp);
                 newUScene = new Scene(newGridPane, 400, 340);
                 newUStage.setScene(newUScene);
@@ -410,11 +395,6 @@ public class Main extends Application {
             });
             //exit in user page
             exitUser.setOnAction(event1 -> {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 userStage.close();
                 finalStage.close();
             });
@@ -423,20 +403,14 @@ public class Main extends Application {
 
         //if exit in welcome page
         exit.setOnAction(e -> {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
             finalStage.close();
         });
-
-
             }
 
-
     public static void main(String[] args) {
+
         launch(args);
     }
 
 }
+

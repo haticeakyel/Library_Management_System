@@ -2,7 +2,7 @@ package sample;
 
 import java.io.*;
 
-public class User  implements Serializable, IUser,ILibrarian {
+public class User  implements  IUser,ILibrarian {
     private String name;
     private String nickname;
     private String password;
@@ -26,26 +26,12 @@ public class User  implements Serializable, IUser,ILibrarian {
         }
     }
 
-    @Override
-    public void showRules() {
-
-    }
 
     @Override
     public void showBooks() {
-
     }
 
 
-    @Override
-    public void borrowBook() {
-
-    }
-
-    @Override
-    public void showFine() {
-
-    }
 
     @Override
     public void changePassword() {
