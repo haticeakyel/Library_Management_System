@@ -2,7 +2,7 @@ package sample;
 
 import javafx.scene.control.Alert;
 
-public class AlertMaker {
+public  class AlertMaker {
     private String tittle;
     private String headerText;
     private String contextText;

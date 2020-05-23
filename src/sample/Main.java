@@ -20,12 +20,11 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,addBookScene, curUSignScene, pScene;
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,curUSignScene, pScene;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -195,6 +194,7 @@ public class Main extends Application {
             adminStage.show();
         });
 
+        String finalRow = row;
         user.setOnAction(event -> {
             Button currentUser = new Button("Current User");
             Button newUser = new Button("New User");
@@ -204,6 +204,7 @@ public class Main extends Application {
             vBoxU.setPadding(new Insets(20,20,20,20));
             vBoxU.getChildren().addAll(currentUser, newUser, exitUser);
             userScene = new Scene(vBoxU, 200, 250);
+            vBoxU.setAlignment(Pos.CENTER);
             userStage.setScene(userScene);
             userStage.setTitle("User Sign In");
             userStage.show();
@@ -240,48 +241,24 @@ public class Main extends Application {
                 curUStage.show();
 
                 curLogin.setOnAction(event1 -> {
-                    if (userList.stream().anyMatch(o -> o.getNickname().equals(curNameInput.getText()) && o.getPassword().equals(curPasswordInput.getText()))){
+                    String currentName;
+                    String currentPassword;
+                    currentName= curNameInput.getText();
+                    currentPassword = curPasswordInput.getText();
+                    User currentUserEnter = userList.stream().filter(o -> o.getNickname().equals(currentName) && o.getPassword().equals(currentPassword)).findFirst().orElse(null);
+                    if (currentUserEnter != null){
+
+
                         Stage stageUser = new Stage();
-                        GridPane gridPaneCurUser = new GridPane();
-                        gridPaneCurUser.setAlignment(Pos.CENTER);
-                        gridPaneCurUser.setPadding(new Insets(20,20,20,20));
-                        Button showBooks = new Button("Show Books");
+                        VBox vBox1 = new VBox(25);
+                        vBox1.setPadding(new Insets(20,20,20,20));
+                        Button showBooksC = new Button("Show Books");
                         Button changeP = new Button("Change Password");
-                        gridPaneCurUser.getChildren().addAll(showBooks, changeP);
-                        curUSignScene = new Scene(gridPaneCurUser, 200,200);
+                        vBox1.getChildren().addAll(showBooksC, changeP);
+                        curUSignScene = new Scene(vBox1, 200,200);
+                        vBox1.setAlignment(Pos.CENTER);
                         stageUser.setScene(curUSignScene);
                         stageUser.show();
-
-
-                        showBooks.setOnAction(event2 -> {
-                            Stage showBooksStage = new Stage();
-                            TableView tableView = new TableView ();
-                            tableView.setEditable(true);
-                            TableColumn nameColumn = new TableColumn("Name");
-                            TableColumn authorColumn = new TableColumn("Author");
-                            TableColumn publisherColumn = new TableColumn("Publisher");
-                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
-                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
-                            tableView.getItems().addAll(bookObservableList);
-                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
-                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
-                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
-                            if (tableView.getSelectionModel().getSelectedItem() != null){
-                                Object newValue = new Object();
-                                TableView.TableViewSelectionModel selectionModel = tableView.getSelectionModel();
-                                ObservableList selectedCells = selectionModel.getSelectedCells();
-                                TablePosition tablePosition = (TablePosition) selectedCells.get(0);
-                                Object val = tablePosition.getTableColumn().getCellData(newValue);
-                                System.out.println("Selected Value" + val);
-                            }
-
-                            VBox vBoxUL = new VBox(25);
-                            vBoxUL.setPadding(new Insets(10,10,10,10));
-                            vBoxUL.getChildren().addAll(tableView);
-                            showBooksScene = new Scene(vBoxUL,1000,2000);
-                            showBooksStage.setScene(showBooksScene);
-                            showBooksStage.show();
-                        });
 
                         changeP.setOnAction(event2 -> {
                             Stage stageP = new Stage();
@@ -296,27 +273,88 @@ public class Main extends Application {
                             passInput.setPromptText(" new password");
                             gridPane.setConstraints(passInput, 1, 0);
                             Label passCheckL = new Label("New Password again: ");
-                            gridPane.setConstraints(passCheckL, 1, 1);
+                            gridPane.setConstraints(passCheckL, 0, 1);
                             PasswordField passCheckI = new PasswordField();
                             passCheckI.setPromptText(" new password");
-                            gridPane.setConstraints(passCheckI, 2, 1);
+                            gridPane.setConstraints(passCheckI, 1, 1);
                             Button edit = new Button("Change Password");
-                            gridPane.setConstraints(edit,2,2);
+                            gridPane.setConstraints(edit,1,2);
+                            gridPane.getChildren().addAll(passwordLabel,passInput,passCheckL,passCheckI,edit);
+                            pScene = new Scene(gridPane,400,400);
+                            stageP.setScene(pScene);
+                            stageP.show();
                             edit.setOnAction(event3 -> {
-                                /* if (passInput.getText().equals(passCheckI.getText())){
-                                    userList.stream().o-> o.setPassword(passInput.getText()));
+                                if (passInput.getText().equals(passCheckI.getText())){
+                                    try {
+                                        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(userFile));
+                                        Iterator iterator = userList.iterator();
+                                        while (iterator.hasNext()){
+                                            User user1 = (User) iterator.next();
+                                            if (user1.getNickname().equals(currentUserEnter.getNickname())){
+                                                bufferedWriter.write(String.format("%s,%s,%s\n",currentUserEnter.getName(),currentUserEnter.getNickname(),passCheckI.getText()));
+
+                                            }
+                                            else {
+                                                bufferedWriter.write(String.format("%s,%s,%s\n",user1.getName(),user1.getNickname(),user1.getPassword()));
+                                            }
+                                        }
+                                        bufferedWriter.close();
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    }
                                 }
                                 else{
-                                    Alert
-                                } */
+                                    AlertMaker alert = new AlertMaker("Error Dialogue", "Passwords don't match!","Please write same passwords!");
+                                    alert.makeAlert();
+                                }
 
-                                gridPane.getChildren().addAll(passwordLabel,passInput,passCheckL,passCheckI,edit);
-                                pScene = new Scene(gridPane,400,400);
-                                stageP.setScene(pScene);
-                                stageP.show();
                             });
 
                         });
+
+
+                        showBooksC.setOnAction(event2 -> {
+                            Stage showBooksStage = new Stage();
+                            TableView tableView = new TableView ();
+                            tableView.setEditable(true);
+                            TableColumn nameColumn = new TableColumn("Name");
+                            TableColumn authorColumn = new TableColumn("Author");
+                            TableColumn publisherColumn = new TableColumn("Publisher");
+                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
+                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
+                            tableView.getItems().addAll(bookObservableList);
+                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
+                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
+                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
+
+                            Button order = new Button("Order");
+                            order.setOnAction(event3 -> {
+                                Book book = (Book) tableView.getSelectionModel().getSelectedItem();
+                                        if (book != null){
+                                            TextInputDialog dialog = new TextInputDialog();
+                                            dialog.setTitle("Ordering Page");
+                                            dialog.setHeaderText(book.getName());
+                                            dialog.setContentText("Please enter your adress: ");
+                                            Optional<String> result = dialog.showAndWait();
+                                            result.ifPresent (adress -> {
+                                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                                alert.setTitle("Ordered Succesfully");
+                                                alert.setContentText(book.getName() + " is shipping to : " + adress);
+                                                alert.show();
+                                            });
+
+                                        }
+                            });
+
+
+                            VBox vBoxUL = new VBox(25);
+                            vBoxUL.setPadding(new Insets(10,10,10,10));
+                            vBoxUL.getChildren().addAll(tableView,order);
+                            showBooksScene = new Scene(vBoxUL,1000,2000);
+                            showBooksStage.setScene(showBooksScene);
+                            showBooksStage.show();
+                        });
+
                     }
 
                     else {
