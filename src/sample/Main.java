@@ -48,27 +48,6 @@ public class Main extends Application {
         }
 
 
-        //buffered reader for books.txt
-        BufferedReader bufferedReaderbook = null;
-        try {
-            bufferedReaderbook = new BufferedReader(new FileReader("books.txt"));
-        } catch (FileNotFoundException ex) {
-            System.out.println("File not found.");
-        }
-        String rowB = "";
-        List<Book> bookList = new ArrayList<>();
-        while (true){
-            try {
-                if (!((rowB = bufferedReaderbook.readLine()) != null))
-                    break;
-            } catch (IOException ex) {
-                System.out.println("Io exception");
-            }
-            String[] info = rowB.split(",");
-            Book book = new Book(info[0],info[1],info[2]);
-            bookList.add(book);
-        }
-
 
         stage = new Stage();
         Stage userStage = new Stage();
@@ -158,25 +137,7 @@ public class Main extends Application {
 
 
                         showBooks.setOnAction(event1 -> {
-                            Stage showBooksStage = new Stage();
-                            TableView tableView = new TableView ();
-                            tableView.setEditable(true);
-                            TableColumn nameColumn = new TableColumn("Name");
-                            TableColumn authorColumn = new TableColumn("Author");
-                            TableColumn publisherColumn = new TableColumn("Publisher");
-                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
-                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
-                            tableView.getItems().addAll(bookObservableList);
-                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
-                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
-                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
-
-                            VBox vBoxUL = new VBox(25);
-                            vBoxUL.setPadding(new Insets(80,80,80,80));
-                            vBoxUL.getChildren().addAll(tableView);
-                            showBooksScene = new Scene(vBoxUL,1000,2000);
-                            showBooksStage.setScene(showBooksScene);
-                            showBooksStage.show();
+                            finalAdminH.showBooks();
                         });
                 }
                 else {
@@ -314,45 +275,7 @@ public class Main extends Application {
 
 
                         showBooksC.setOnAction(event2 -> {
-                            Stage showBooksStage = new Stage();
-                            TableView tableView = new TableView ();
-                            tableView.setEditable(true);
-                            TableColumn nameColumn = new TableColumn("Name");
-                            TableColumn authorColumn = new TableColumn("Author");
-                            TableColumn publisherColumn = new TableColumn("Publisher");
-                            tableView.getColumns().addAll(nameColumn,authorColumn, publisherColumn);
-                            ObservableList<Book> bookObservableList = FXCollections.observableArrayList(bookList);
-                            tableView.getItems().addAll(bookObservableList);
-                            nameColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("name"));
-                            authorColumn.setCellValueFactory(new PropertyValueFactory<Book,String>("author"));
-                            publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
-
-                            Button order = new Button("Order");
-                            order.setOnAction(event3 -> {
-                                Book book = (Book) tableView.getSelectionModel().getSelectedItem();
-                                        if (book != null){
-                                            TextInputDialog dialog = new TextInputDialog();
-                                            dialog.setTitle("Ordering Page");
-                                            dialog.setHeaderText(book.getName());
-                                            dialog.setContentText("Please enter your adress: ");
-                                            Optional<String> result = dialog.showAndWait();
-                                            result.ifPresent (adress -> {
-                                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                                alert.setTitle("Ordered Succesfully");
-                                                alert.setContentText(book.getName() + " is shipping to : " + adress);
-                                                alert.show();
-                                            });
-
-                                        }
-                            });
-
-
-                            VBox vBoxUL = new VBox(25);
-                            vBoxUL.setPadding(new Insets(10,10,10,10));
-                            vBoxUL.getChildren().addAll(tableView,order);
-                            showBooksScene = new Scene(vBoxUL,1000,2000);
-                            showBooksStage.setScene(showBooksScene);
-                            showBooksStage.show();
+                            currentUserEnter.showBooks();
                         });
 
                     }

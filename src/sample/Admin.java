@@ -11,10 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.Optional;
 
-public class Admin extends Librarian implements IAdmin,ILibrarian{
+public class Admin extends Librarian implements IAdmin{
 
-    Scene addBookScene, showBooksScene;
+
+    Scene addBookScene, showUsersScene;
     private String username;
     private String password ;
 
@@ -90,13 +92,10 @@ public class Admin extends Librarian implements IAdmin,ILibrarian{
 
     }
 
-
     @Override
     public void showBooks() {
-
-
+        super.showBooks();
     }
-
 
     public String getUsername() {
         return username;
