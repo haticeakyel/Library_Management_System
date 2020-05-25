@@ -1,25 +1,14 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -119,8 +108,6 @@ public class Main extends Application {
                             finalAdminH.addBook();
 
                     });
-
-
                         showBooks.setOnAction(event1 -> {
                             finalAdminH.showBooks();
                         });
@@ -129,9 +116,7 @@ public class Main extends Application {
                     AlertMaker alert = new AlertMaker("Error Dialog","Please try again!","You entered something wrong!");
                     alert.makeAlert();
                 }
-
             });
-
 
             gridPane.getChildren().addAll(nameLabel, nameInput, passwordLabel, passwordInput, login);
             adminScene = new Scene(gridPane, 300, 200);
@@ -193,8 +178,6 @@ public class Main extends Application {
                     currentPassword = curPasswordInput.getText();
                     User currentUserEnter = userList.stream().filter(o -> o.getNickname().equals(currentName) && o.getPassword().equals(currentPassword)).findFirst().orElse(null);
                     if (currentUserEnter != null){
-
-
                         Stage stageUser = new Stage();
                         VBox vBox1 = new VBox(25);
                         vBox1.setPadding(new Insets(20,20,20,20));
@@ -253,24 +236,18 @@ public class Main extends Application {
                                     AlertMaker alert = new AlertMaker("Error Dialogue", "Passwords don't match!","Please write same passwords!");
                                     alert.makeAlert();
                                 }
-
                             });
-
                         });
-
 
                         showBooksC.setOnAction(event2 -> {
                             currentUserEnter.showBooks();
                         });
-
                     }
 
                     else {
                         AlertMaker alert = new AlertMaker("Error Dialog","Please try again!","You entered something wrong!");
                         alert.makeAlert();
                     }
-
-
                 });
 
             });
@@ -325,7 +302,6 @@ public class Main extends Application {
                     }
                     }
                     }
-
                     else {
                         AlertMaker alert = new AlertMaker("Error Dialog","Passwords don't match!","Please write same passwords!");
                         alert.makeAlert();
@@ -354,7 +330,6 @@ public class Main extends Application {
             }
 
     public static void main(String[] args) {
-
         launch(args);
     }
 

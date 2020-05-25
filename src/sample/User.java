@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class User extends Librarian implements  IUser{
+public class User extends Librarian{
     private String name;
     private String nickname;
     private String password;
@@ -89,15 +89,14 @@ public class User extends Librarian implements  IUser{
                 Optional<String> result = dialog.showAndWait();
                 result.ifPresent (adress -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Ordered Succesfully");
+                    alert.setTitle("Adress page");
+                    alert.setHeaderText("Ordered Succesfully");
                     alert.setContentText(book.getName() + " is shipping to : " + adress);
                     alert.show();
                 });
 
             }
         });
-
-
         VBox vBoxUL = new VBox(25);
         vBoxUL.setPadding(new Insets(10,10,10,10));
         vBoxUL.getChildren().addAll(tableView,order);
@@ -107,12 +106,6 @@ public class User extends Librarian implements  IUser{
 
     }
 
-
-
-    @Override
-    public void changePassword() {
-
-    }
 
 
     public String getName() {
