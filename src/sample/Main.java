@@ -24,11 +24,10 @@ import java.util.*;
 
 
 public class Main extends Application {
-    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,showBooksScene,showUsersScene,curUSignScene, pScene;
+    Scene welcomeScene, userScene, adminScene, currentUScene, newUScene, adminMethodsScene,curUSignScene, pScene;
 
     @Override
     public void start(Stage stage) throws Exception {
-
         File userFile = new File("users.txt");
         if(userFile.createNewFile()){
             System.out.println("users.txt created");
@@ -46,8 +45,6 @@ public class Main extends Application {
             User user = new User(data[0],data[1],data[2]);
             userList.add(user);
         }
-
-
 
         stage = new Stage();
         Stage userStage = new Stage();
@@ -111,23 +108,11 @@ public class Main extends Application {
                     adminMethods.show();
 
                     showUsers.setOnAction(event1 -> {
-                        Stage stageUsers = new Stage();
-                        TableView tableView = new TableView ();
-                        tableView.setEditable(true);
-                        TableColumn nameColumn = new TableColumn("Name Surname");
-                        TableColumn usernameColumn = new TableColumn("Username");
-                        tableView.getColumns().addAll(nameColumn,usernameColumn);
-                        ObservableList<User> userObservableList = FXCollections.observableArrayList(userList);
-                        tableView.getItems().addAll(userObservableList);
-                        nameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("name"));
-                        usernameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("nickname"));
-
-                        VBox vBoxUL = new VBox(25);
-                        vBoxUL.setPadding(new Insets(10,10,10,10));
-                        vBoxUL.getChildren().addAll(tableView);
-                        showUsersScene = new Scene(vBoxUL,500,500);
-                        stageUsers.setScene(showUsersScene);
-                        stageUsers.show();
+                        try {
+                            finalAdminH.showUsers();
+                        } catch (IOException ex) {
+                            System.out.println("Io exception");
+                        }
 
                     });
                         addBook.setOnAction(event1 -> {

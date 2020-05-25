@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Admin extends Librarian implements IAdmin{
@@ -28,8 +30,52 @@ public class Admin extends Librarian implements IAdmin{
 
 
     @Override
-    public void showUsers() {
+    public void showUsers() throws IOException {
+        File userFile = new File("users.txt");
+        if(userFile.createNewFile()){
+            System.out.println("users.txt created");
+        }
+        else {
+            System.out.println("users.txt is already exist");
+        }
 
+        // buffered reader for users.txt
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader("users.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String row = null;
+        List<User> userList = new ArrayList<>();
+        while (true){
+            try {
+                if (!((row = bufferedReader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String[] data = row.split(",");
+            User user = new User(data[0],data[1],data[2]);
+            userList.add(user);
+        }
+
+        Stage stageUsers = new Stage();
+        TableView tableView = new TableView ();
+        tableView.setEditable(true);
+        TableColumn nameColumn = new TableColumn("Name Surname");
+        TableColumn usernameColumn = new TableColumn("Username");
+        tableView.getColumns().addAll(nameColumn,usernameColumn);
+        ObservableList<User> userObservableList = FXCollections.observableArrayList(userList);
+        tableView.getItems().addAll(userObservableList);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("name"));
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<User,String>("nickname"));
+
+        VBox vBoxUL = new VBox(25);
+        vBoxUL.setPadding(new Insets(10,10,10,10));
+        vBoxUL.getChildren().addAll(tableView);
+        showUsersScene = new Scene(vBoxUL,500,500);
+        stageUsers.setScene(showUsersScene);
+        stageUsers.show();
     }
 
 
