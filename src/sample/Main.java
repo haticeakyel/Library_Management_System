@@ -92,6 +92,7 @@ public class Main extends Application {
                     Button addBook = new Button("Add Book");
 
                     vBoxAdM.getChildren().addAll(showUsers, showBooks, addBook);
+                    vBoxAdM.setAlignment(Pos.CENTER);
                     adminMethodsScene = new Scene(vBoxAdM, 180,200);
                     adminMethods.setScene(adminMethodsScene);
                     adminMethods.show();
@@ -221,6 +222,11 @@ public class Main extends Application {
                                             User user1 = (User) iterator.next();
                                             if (user1.getNickname().equals(currentUserEnter.getNickname())){
                                                 bufferedWriter.write(String.format("%s,%s,%s\n",currentUserEnter.getName(),currentUserEnter.getNickname(),passCheckI.getText()));
+                                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                                alert.setTitle("Password changed");
+                                                alert.setHeaderText("Mission completed");
+                                                alert.setContentText("Password has changed!");
+                                                alert.show();
 
                                             }
                                             else {
@@ -299,8 +305,7 @@ public class Main extends Application {
                     }
                     catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    }
+                    }}
                     }
                     else {
                         AlertMaker alert = new AlertMaker("Error Dialog","Passwords don't match!","Please write same passwords!");

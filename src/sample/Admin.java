@@ -129,6 +129,11 @@ public class Admin extends Librarian implements IAdmin{
                 BufferedWriter bufferedWriterBook = new BufferedWriter(new FileWriter("books.txt",true));
                 bufferedWriterBook.write(String.format("%s,%s,%s\n",bookNameInput.getText(),authorInput.getText(),publisherInput.getText()));
                 bufferedWriterBook.close();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Added book");
+                alert.setHeaderText("The book that you written is added to list!");
+                alert.setContentText("Mission completed. Book is in the list.");
+                alert.showAndWait();
             } catch (IOException ex) {
                 System.out.println("Io Exception while writing books.txt");
             }

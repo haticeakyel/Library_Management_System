@@ -1,4 +1,4 @@
-Selin Akçay,selinakcay,123456
+Selin Akçay,selinakcay,123
 Handenur Mırık,handenurmirik,123hande
 Selma Akyel,selmaakyel,selma12
 Elif Yaren Ekinci,eyarenekinci,yaren2000
