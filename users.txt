@@ -1,6 +1,3 @@
 Selin Akçay,selinakcay,123
 Handenur Mırık,handenurmirik,123hande
-Selma Akyel,selmaakyel,selma12
-Elif Yaren Ekinci,eyarenekinci,yaren2000
-Gizem Uzun,gizemuzun,gizem99
-Zeynep Silibuldu,zeynepsilibuldu,zeynep99
+
